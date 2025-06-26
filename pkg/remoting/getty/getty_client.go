@@ -40,14 +40,12 @@ type GettyRemotingClient struct {
 }
 
 func GetGettyRemotingClient() *GettyRemotingClient {
-	if gettyRemotingClient == nil {
-		onceGettyRemotingClient.Do(func() {
-			gettyRemotingClient = &GettyRemotingClient{
-				idGenerator:   &atomic.Uint32{},
-				gettyRemoting: newGettyRemoting(),
-			}
-		})
-	}
+	onceGettyRemotingClient.Do(func() {
+		gettyRemotingClient = &GettyRemotingClient{
+			idGenerator:   &atomic.Uint32{},
+			gettyRemoting: newGettyRemoting(),
+		}
+	})
 	return gettyRemotingClient
 }
 

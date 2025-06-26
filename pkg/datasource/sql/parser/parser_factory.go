@@ -21,11 +21,21 @@ import (
 	aparser "github.com/arana-db/parser"
 	"github.com/arana-db/parser/ast"
 
+	"sync"
+
 	"seata.apache.org/seata-go/pkg/datasource/sql/types"
 )
 
+var parserPool = sync.Pool{
+	New: func() interface{} {
+		return aparser.New()
+	},
+}
+
 func DoParser(query string) (*types.ParseContext, error) {
-	p := aparser.New()
+	p := parserPool.Get().(*aparser.Parser)
+	defer parserPool.Put(p)
+
 	stmtNodes, _, err := p.Parse(query, "", "")
 	if err != nil {
 		return nil, err
